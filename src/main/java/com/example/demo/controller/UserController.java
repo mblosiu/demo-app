@@ -19,27 +19,27 @@ public class UserController {
     }
 
     @GetMapping("/users/{id}")
-    public ResponseEntity<User> getUser(@PathVariable Long id) {
+    public User getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }
 
     @PostMapping("/users")
-    public ResponseEntity<String> createUser(@RequestBody User newUser) {
+    public User createUser(@RequestBody User newUser) {
         return userService.createUser(newUser);
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id) {
+    public String deleteUser(@PathVariable Long id) {
         return userService.deleteUser(id);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User userReq) {
+    public User updateUser(@PathVariable Long id, @RequestBody User userReq) {
         return userService.updateUser(id, userReq);
     }
 
     @PatchMapping("/users/{id}")
-    public ResponseEntity<String> partialUpdateUser(@PathVariable Long id, @RequestBody User userReq) {
+    public User partialUpdateUser(@PathVariable Long id, @RequestBody User userReq) {
         return userService.partialUpdateUser(id, userReq);
     }
 

@@ -3,8 +3,8 @@ package com.example.demo.service;
 import com.example.demo.model.User;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,79 +23,71 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public ResponseEntity<User> getUser(Long id) {
+    public User getUser(Long id) {
         Optional<User> userOptional = userRepository.findById(id);
-        if (userOptional.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (userOptional.isEmpty()) {
+            throw new IllegalArgumentException("User doesn't exist.");
         }
-        User user = userOptional.get();
-        return new ResponseEntity<>(user, HttpStatus.OK);
+        return userOptional.get();
     }
 
     @Transactional
-    public ResponseEntity<String> createUser(@RequestBody User newUser) {
+    public User createUser(@RequestBody User newUser) {
         if (userRepository.findByEmail(newUser.getEmail()).isPresent()) {
-            return new ResponseEntity<>("Email address is already taken.", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("Email address is already taken.");
         }
         if (newUser.getEmail() == null || newUser.getFirstName() == null || newUser.getLastName() == null) {
-            return new ResponseEntity<>("Data is not complete.", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("Required data not provided.");
         }
         userRepository.save(newUser);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return newUser;
     }
 
     @Transactional
-    public ResponseEntity<String> deleteUser(Long id) {
-        boolean userExists = userRepository.existsById(id);
-        if (!userExists) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public String deleteUser(Long id) {
+        Optional<User> user = userRepository.findById(id);
+        if (user.isEmpty()) {
+            throw new IllegalArgumentException("User doesn't exist.");
         }
-        userRepository.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+        userRepository.delete(user.get());
+        return "User " + id + " deleted successfully.";
     }
 
     @Transactional
-    public ResponseEntity<String> updateUser(Long id, User userReq) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public User updateUser(Long id, User userReq) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User doesn't exist."));
         if (userRepository.findByEmail(userReq.getEmail()).isPresent()) {
-            return new ResponseEntity<>("Email address is already taken.", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("Email address is already taken.");
         }
         if (userReq.getEmail() == null || userReq.getFirstName() == null || userReq.getLastName() == null) {
-            return new ResponseEntity<>("Data is not complete.", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("Required data not provided.");
         }
         user.setFirstName(userReq.getFirstName());
         user.setLastName(userReq.getLastName());
         user.setEmail(userReq.getEmail());
         userRepository.save(user);
-        return new ResponseEntity<>("User updated", HttpStatus.OK);
+        return user;
     }
 
     @Transactional
-    public ResponseEntity<String> partialUpdateUser(Long id, User userReq) {
-        User user = userRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public User partialUpdateUser(Long id, User userReq) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User doesn't exist."));
 
-        int changes = 0;
         if (userReq.getEmail() != null && !Objects.equals(userReq.getEmail(), user.getEmail())) {
             user.setEmail(userReq.getEmail());
-            changes++;
         }
         if (userReq.getFirstName() != null && !Objects.equals(userReq.getFirstName(), user.getFirstName())) {
             user.setFirstName(userReq.getFirstName());
-            changes++;
         }
         if (userReq.getLastName() != null && !Objects.equals(userReq.getLastName(), user.getLastName())) {
             user.setLastName(userReq.getLastName());
-            changes++;
-        }
-        if (changes > 0) {
-            return new ResponseEntity<>("No changes", HttpStatus.OK);
         }
 
         if (userRepository.findByEmail(userReq.getEmail()).isPresent()) {
-            return new ResponseEntity<>("Email address is already taken.", HttpStatus.BAD_REQUEST);
+            throw new IllegalArgumentException("Email address is already taken.");
         }
 
         userRepository.save(user);
-        return new ResponseEntity<>("User updated", HttpStatus.OK);
+        return user;
     }
 }
