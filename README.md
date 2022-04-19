@@ -1,2 +1,2 @@
 # demo-app
-Simple application with unit tests.
+Simple application with data access and service layer unit tests.
