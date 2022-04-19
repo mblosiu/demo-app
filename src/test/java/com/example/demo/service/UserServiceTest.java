@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.Mockito.*;
 
@@ -50,9 +49,7 @@ class UserServiceTest {
         when(userRepository.findAll()).thenReturn(list);
 
         List<User> userList = userService.getUsers();
-
-        assertEquals(3, userList.size());
-        verify(userRepository, times(1)).findAll();
+        assertThat(userList.size()).isEqualTo(3);
     }
 
     @Test
@@ -64,7 +61,6 @@ class UserServiceTest {
         User user = userService.getUser(1L);
 
         assertThat(user).isEqualTo(user1);
-        verify(userRepository, times(1)).findById(1L);
     }
 
     @Test
@@ -75,6 +71,8 @@ class UserServiceTest {
             fail("Should throw exception.");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).isEqualTo("User doesn't exist.");
+        } catch (Exception ex) {
+            fail("Other exception");
         }
     }
 
@@ -95,6 +93,8 @@ class UserServiceTest {
             fail("Should throw exception.");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).isEqualTo("Email address is already taken.");
+        } catch (Exception ex) {
+            fail("Other exception");
         }
     }
 
@@ -108,6 +108,8 @@ class UserServiceTest {
             fail("Should throw exception.");
         } catch (IllegalArgumentException e) {
             assertThat(e.getMessage()).isEqualTo("Required data not provided.");
+        } catch (Exception ex) {
+            fail("Other exception");
         }
     }
 
@@ -127,6 +129,8 @@ class UserServiceTest {
             fail("Should throw exception.");
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).isEqualTo("User doesn't exist.");
+        } catch (Exception ex) {
+            fail("Other exception");
         }
     }
 
@@ -154,7 +158,7 @@ class UserServiceTest {
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).isEqualTo("User doesn't exist.");
         } catch (Exception ex) {
-            fail("Wrong exception");
+            fail("Other exception");
         }
     }
 
@@ -170,7 +174,7 @@ class UserServiceTest {
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).isEqualTo("Email address is already taken.");
         } catch (Exception ex) {
-            fail("Wrong exception");
+            fail("Other exception");
         }
     }
 
@@ -185,7 +189,7 @@ class UserServiceTest {
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).isEqualTo("Required data not provided.");
         } catch (Exception ex) {
-            fail("Wrong exception");
+            fail("Other exception");
         }
     }
 
@@ -211,7 +215,7 @@ class UserServiceTest {
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).isEqualTo("User doesn't exist.");
         } catch (Exception ex) {
-            fail("Wrong exception");
+            fail("Other exception");
         }
 
     }
@@ -229,7 +233,7 @@ class UserServiceTest {
         } catch (IllegalArgumentException ex) {
             assertThat(ex.getMessage()).isEqualTo("Email address is already taken.");
         } catch (Exception ex) {
-            fail("Wrong exception");
+            fail("Other exception");
         }
     }
 }

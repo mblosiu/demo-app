@@ -8,32 +8,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserControllerTest {
 
     @Test
-    @Disabled
+    @Disabled("Not implemented yet")
     void getUsers() {
     }
 
     @Test
-    @Disabled
+    @Disabled("Not implemented yet")
     void getUser() {
     }
 
     @Test
-    @Disabled
+    @Disabled("Not implemented yet")
     void createUser() {
     }
 
     @Test
-    @Disabled
+    @Disabled("Not implemented yet")
     void deleteUser() {
     }
 
     @Test
-    @Disabled
+    @Disabled("Not implemented yet")
     void updateUser() {
     }
 
     @Test
-    @Disabled
+    @Disabled("Not implemented yet")
     void partialUpdateUser() {
     }
 }
